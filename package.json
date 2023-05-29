@@ -8,7 +8,11 @@
     "lint:check": "eslint --ignore-path .eslintignore --ext .js,.ts .",
     "link:fix": "eslint --fix",
     "prettier:check": "prettier --ignore-path .gitignore --write \"**/*.+(js|ts|json)\"",
+    "lint-prettier": "yarn link:check && prettier:check",
     "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "lint-staged": {
+    "src/**/*.ts": "yarn lint:prettier"
   },
   "author": "Mohammad Sumon",
   "license": "ISC",
@@ -20,6 +24,7 @@
     "eslint": "^8.41.0",
     "eslint-config-prettier": "^8.8.0",
     "husky": "^8.0.3",
+    "lint-staged": "^13.2.2",
     "prettier": "^2.8.8",
     "ts-node-dev": "^2.0.0",
     "typescript": "^5.0.4"

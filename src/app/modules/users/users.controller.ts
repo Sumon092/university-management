@@ -15,7 +15,6 @@ const createUser = (req: Request, res: Response) => {
       success: false,
       message: 'Failed to create user',
     })
-    console.log(err)
   }
 }
 export default { createUser }

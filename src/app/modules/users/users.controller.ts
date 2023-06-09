@@ -1,20 +1,24 @@
 import { Request, Response } from 'express'
 import usersServices from './users.services'
 
-const createUser = (req: Request, res: Response) => {
+const createUser = async (req: Request, res: Response) => {
   try {
-    const user = req.body
-    const result = usersServices.createUser(user)
+    const { user } = req.body
+    const result = await usersServices.createUser(user)
     res.status(200).json({
       success: true,
-      message: 'Created user successfully',
+      message: 'user created successfully!',
       data: result,
     })
   } catch (err) {
     res.status(400).json({
       success: false,
       message: 'Failed to create user',
+      error: err,
     })
   }
 }
-export default { createUser }
+
+export default {
+  createUser,
+}

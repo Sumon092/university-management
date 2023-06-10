@@ -14,14 +14,9 @@ app.use(express.json())
 app.use(bodyParser.json())
 app.use(express.urlencoded({ extended: true }))
 
-app.use('/api/v1/user/', userRouter)
-//testing
-// app.get('/', (req: Request, res: Response, next: NextFunction) => {
-//   throw new Error('There is an error')
-//   // next('an error occured')
-// })
-
 // Global error handler
 app.use(globalErrorHandler)
+
+app.use('/api/v1/user/', userRouter)
 
 export default app

@@ -7,16 +7,15 @@ const app: Application = express()
 
 app.use(cors())
 
-//application routes
-
 //parser
 app.use(express.json())
 app.use(bodyParser.json())
 app.use(express.urlencoded({ extended: true }))
 
+//application routes
+app.use('/api/v1/user/', userRouter)
+
 // Global error handler
 app.use(globalErrorHandler)
-
-app.use('/api/v1/user/', userRouter)
 
 export default app

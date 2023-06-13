@@ -1,7 +1,7 @@
 import express, { Application } from 'express'
 import cors from 'cors'
 import { UserRoutes } from './app/modules/users/user.route'
-import globalErrorHandler from './app/middlewares/globalErrors'
+import globalErrorHandler from './app/middleware/globalErrors'
 const app: Application = express()
 
 app.use(cors())
@@ -15,8 +15,8 @@ app.use('/api/v1/user/', UserRoutes)
 
 // Testing
 app.get('/', async () => {
-  //   console.log(x)
-  //   Promise.reject(new Error('Unhandled promise Rejection'))
+  // console.log(x)
+  Promise.reject(new Error('Unhandled promise Rejection'))
 })
 
 // Global error handler

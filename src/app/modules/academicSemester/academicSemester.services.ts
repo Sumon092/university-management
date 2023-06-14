@@ -2,7 +2,7 @@ import ApiError from '../../../errors/ApiErrors';
 import { academicSemesterTitleCodeMapper } from './academicSemester.constant';
 import { IAcademicSemester } from './academicSemester.interface';
 import httpStatus from 'http-status';
-import { AcademicSemester } from './academicSemesterModel';
+import { AcademicSemester } from './academicSemester.model';
 
 export const createSemester = async (payload: IAcademicSemester) => {
   if (academicSemesterTitleCodeMapper[payload.title] !== payload.code) {

@@ -11,7 +11,7 @@ router.post(
   validateRequest(AcademicSemesterValidation.createAcademicSemesterZodSchema),
   AcademicSemesterController.createSemester
 );
-
+console.log('route heated');
 export const academicSemesterRoute = router;
 
 // middleware

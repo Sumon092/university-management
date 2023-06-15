@@ -2,11 +2,13 @@ import ApiError from '../../../errors/ApiErrors';
 import { academicSemesterTitleCodeMapper } from './academicSemester.constant';
 import { IAcademicSemester } from './academicSemester.interface';
 import httpStatus from 'http-status';
-import { AcademicSemester } from './academicSemesterModel';
+import { AcademicSemester } from './academicSemester.model';
 
-export const createSemester = async (payload: IAcademicSemester) => {
+const createSemester = async (
+  payload: IAcademicSemester
+): Promise<IAcademicSemester> => {
   if (academicSemesterTitleCodeMapper[payload.title] !== payload.code) {
-    throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid semester code found!');
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid Semester Code');
   }
   const result = await AcademicSemester.create(payload);
   return result;

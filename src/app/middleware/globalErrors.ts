@@ -25,6 +25,7 @@ const globalErrorHandler: ErrorRequestHandler = (error, req, res, next) => {
     message = simplifiedError.message;
     errorMessages = simplifiedError.errorMessages;
   } else if (error instanceof ZodError) {
+    console.log('inside zod error');
     const simplifiedError = handleZodError(error);
     statusCode = simplifiedError.statusCode;
     message = simplifiedError.message;
@@ -57,7 +58,7 @@ const globalErrorHandler: ErrorRequestHandler = (error, req, res, next) => {
     errorMessages,
     stack: config.env !== 'production' ? error?.stack : null,
   });
-  next();
+  next(error);
 };
 
 export default globalErrorHandler;

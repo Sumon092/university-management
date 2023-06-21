@@ -3,27 +3,22 @@ import cors from 'cors';
 import globalErrorHandler from './app/middleware/globalErrors';
 import routes from './app/routes';
 import httpStatus from 'http-status';
+
 const app: Application = express();
 
 app.use(cors());
 
-//parser
+// Parser
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-//application routes
-app.use('/api/v1', routes);
-
-// Testing
-// app.get('/', async () => {
-//   // console.log(x)
-//   Promise.reject(new Error('Unhandled promise Rejection'));
-// });
-
 // Global error handler
+app.use('/api/v1', routes);
 app.use(globalErrorHandler);
 
-// handle not found
+// Application routes
+
+// Handle not found
 app.use((req: Request, res: Response) => {
   res.status(httpStatus.NOT_FOUND).json({
     success: false,
@@ -35,7 +30,6 @@ app.use((req: Request, res: Response) => {
       },
     ],
   });
-  //   next();
 });
 
 export default app;

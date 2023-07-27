@@ -12,8 +12,8 @@ process.on('uncaughtException', err => {
 let server: Server;
 async function bootstrap() {
   try {
-    await mongoose.connect(config.database_url as string);
-    // await mongoose.connect('mongodb://127.0.0.1:27017/university-management');
+    // await mongoose.connect(config.database_url as string);
+    await mongoose.connect('mongodb://127.0.0.1:27017/university-management');
     logger.info(`Database connected`);
     server = app.listen(config.port, () => {
       logger.info(`University app listening on port ${config.port}`);

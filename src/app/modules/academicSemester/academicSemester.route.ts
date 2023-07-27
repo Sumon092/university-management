@@ -12,7 +12,7 @@ router.post(
   AcademicSemesterController.createSemester
 );
 
-router.get('/', AcademicSemesterController.getAllSemester);
+router.get('/', AcademicSemesterController.getAllSemesters);
 export const academicSemesterRoute = router;
 
 // middleware

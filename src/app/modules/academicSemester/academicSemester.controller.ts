@@ -31,7 +31,6 @@ const getAllSemesters = catchAsync(async (req: Request, res: Response) => {
     filters,
     paginationOptions
   );
-
   sendResponse<IAcademicSemester[]>(res, {
     statusCode: httpStatus.OK,
     success: true,
@@ -42,15 +41,18 @@ const getAllSemesters = catchAsync(async (req: Request, res: Response) => {
 });
 
 const getSemester = async (req: Request, res: Response, next: NextFunction) => {
-  const id = req.params.id;
-  const result = await AcademicSemesterService.getSemester(id);
-  sendResponse<IAcademicSemester>(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: 'Semester retrieved successfully !',
-    data: result,
-  });
-  next();
+  try {
+    const id = req.params.id;
+    const result = await AcademicSemesterService.getSemester(id);
+    sendResponse<IAcademicSemester>(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Semester retrieved successfully !',
+      data: result,
+    });
+  } catch (error) {
+    next(error);
+  }
 };
 export const AcademicSemesterController = {
   createSemester,

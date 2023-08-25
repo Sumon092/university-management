@@ -14,6 +14,11 @@ router.post(
 
 router.get('/:id', AcademicSemesterController.getSemester);
 router.get('/', AcademicSemesterController.getAllSemesters);
+router.patch(
+  '/update/:id',
+  validateRequest(AcademicSemesterValidation.updateAcademicSemesterZodSchema),
+  AcademicSemesterController.updateSemester
+);
 export const academicSemesterRoute = router;
 
 // middleware

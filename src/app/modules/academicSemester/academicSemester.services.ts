@@ -77,12 +77,31 @@ const getAllSemesters = async (
     data: result,
   };
 };
+// get single semester
 const getSemester = async (id: string): Promise<IAcademicSemester | null> => {
   const result = await AcademicSemester.findById(id);
+  return result;
+};
+// update semester
+const updateSemester = async (
+  id: string,
+  payLoad: Partial<IAcademicSemester>
+): Promise<IAcademicSemester | null> => {
+  if (
+    payLoad.title &&
+    payLoad.code &&
+    academicSemesterTitleCodeMapper[payLoad.title] !== payLoad.code
+  ) {
+    throw new ApiError(httpStatus.BAD_REQUEST, 'Invalid Semester Code');
+  }
+  const result = await AcademicSemester.findOneAndUpdate({ _id: id }, payLoad, {
+    new: true,
+  });
   return result;
 };
 export const AcademicSemesterService = {
   createSemester,
   getAllSemesters,
   getSemester,
+  updateSemester,
 };

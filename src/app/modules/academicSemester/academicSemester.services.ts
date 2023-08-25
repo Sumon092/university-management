@@ -25,6 +25,7 @@ const createSemester = async (
   return result;
 };
 
+// get all semester with pagination
 const getAllSemesters = async (
   filters: IAcademicSemesterFilters,
   paginationOptions: IPaginationOptions
@@ -78,11 +79,7 @@ const getAllSemesters = async (
 };
 const getSemester = async (id: string): Promise<IAcademicSemester | null> => {
   const result = await AcademicSemester.findById(id);
-  if (result) {
-    return result;
-  } else {
-    throw new Error();
-  }
+  return result;
 };
 export const AcademicSemesterService = {
   createSemester,

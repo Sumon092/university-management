@@ -19,6 +19,5 @@ router.patch(
   validateRequest(AcademicSemesterValidation.updateAcademicSemesterZodSchema),
   AcademicSemesterController.updateSemester
 );
+router.delete('/delete/:id', AcademicSemesterController.deleteSemester);
 export const academicSemesterRoute = router;
-
-// middleware

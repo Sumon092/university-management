@@ -20,6 +20,7 @@ const createAcademicFaculty = catchAsync(
     });
   }
 );
+
 const getAcademicFaculties = catchAsync(async (req: Request, res: Response) => {
   const filters = pick(req.query, academicFacultyFilterableFields);
   const options = pick(req.query, ['page', 'limit', 'sortBy', 'sortOrder']);

@@ -8,9 +8,13 @@ const create = z.object({
   }),
 });
 const update = z.object({
-  body: z.object({
-    title: z.string().optional(),
-  }),
+  body: z
+    .object({
+      title: z.string({}).optional(),
+    })
+    .refine(value => 'title' in value, {
+      message: 'Invalid field name detected. Only title is allowed.',
+    }),
 });
 export const academicFacultyValidation = {
   create,

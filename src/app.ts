@@ -12,11 +12,11 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Global error handler
-app.use('/api/v1', routes);
-app.use(globalErrorHandler);
-
 // Application routes
+app.use('/api/v1', routes);
+
+// Global error handler
+app.use(globalErrorHandler);
 
 // Handle not found
 app.use((req: Request, res: Response) => {

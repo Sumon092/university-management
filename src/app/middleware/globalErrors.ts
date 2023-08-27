@@ -1,7 +1,7 @@
 /* eslint-disable no-unused-expressions */
 /* eslint-disable no-console */
 import { ErrorRequestHandler } from 'express';
-import { IGenericErrMessage } from '../../interfaces/error';
+import { IGenericErrorMessage } from '../../interfaces/error';
 import handleValidationError from '../../errors/handleValidationError';
 import config from '../../config';
 import ApiError from '../../errors/ApiErrors';
@@ -9,6 +9,7 @@ import { Error } from 'mongoose';
 import { errorLogger } from '../../shared/logger';
 import { ZodError } from 'zod';
 import handleZodError from '../../errors/handleZodError';
+import handleCastError from '../../errors/handleCastError';
 
 const globalErrorHandler: ErrorRequestHandler = (error, req, res, next) => {
   config.env === 'development'
@@ -17,7 +18,7 @@ const globalErrorHandler: ErrorRequestHandler = (error, req, res, next) => {
 
   let statusCode = 500;
   let message = 'something went wrong';
-  let errorMessages: IGenericErrMessage[] = [];
+  let errorMessages: IGenericErrorMessage[] = [];
 
   if (error?.name === 'ValidationError') {
     const simplifiedError = handleValidationError(error);
@@ -25,8 +26,12 @@ const globalErrorHandler: ErrorRequestHandler = (error, req, res, next) => {
     message = simplifiedError.message;
     errorMessages = simplifiedError.errorMessages;
   } else if (error instanceof ZodError) {
-    console.log('inside zod error');
     const simplifiedError = handleZodError(error);
+    statusCode = simplifiedError.statusCode;
+    message = simplifiedError.message;
+    errorMessages = simplifiedError.errorMessages;
+  } else if (error?.name === 'CastError') {
+    const simplifiedError = handleCastError(error);
     statusCode = simplifiedError.statusCode;
     message = simplifiedError.message;
     errorMessages = simplifiedError.errorMessages;

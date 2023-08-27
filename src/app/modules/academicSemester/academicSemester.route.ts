@@ -12,7 +12,12 @@ router.post(
   AcademicSemesterController.createSemester
 );
 
-router.get('/', AcademicSemesterController.getAllSemester);
+router.get('/:id', AcademicSemesterController.getSemester);
+router.get('/', AcademicSemesterController.getAllSemesters);
+router.patch(
+  '/update/:id',
+  validateRequest(AcademicSemesterValidation.updateAcademicSemesterZodSchema),
+  AcademicSemesterController.updateSemester
+);
+router.delete('/delete/:id', AcademicSemesterController.deleteSemester);
 export const academicSemesterRoute = router;
-
-// middleware

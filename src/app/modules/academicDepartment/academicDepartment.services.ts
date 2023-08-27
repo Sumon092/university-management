@@ -1,6 +1,13 @@
+import { SortOrder } from 'mongoose';
+import { paginationHelpers } from '../../../helper/paginationHelper';
 import { IGenericResponse } from '../../../interfaces/common';
-import { IAcademicDepartment } from './academicDepartment.interface';
+import { IPaginationOptions } from '../../../interfaces/pagination';
+import {
+  IAcademicDepartment,
+  IAcademicDepartmentFilters,
+} from './academicDepartment.interface';
 import { AcademicDepartment } from './academicDepartment.model';
+import { academicDepartmentSearchableFields } from './academicDepartment.constants';
 
 const createDepartment = async (
   payLoad: IAcademicDepartment
@@ -11,15 +18,49 @@ const createDepartment = async (
   return result;
 };
 
-const getDepartments = async (): Promise<
-  IGenericResponse<IAcademicDepartment[]>
-> => {
-  const result = await AcademicDepartment.find().populate('academicFaculty');
+const getDepartments = async (
+  filters: IAcademicDepartmentFilters,
+  options: IPaginationOptions
+): Promise<IGenericResponse<IAcademicDepartment[]>> => {
+  const { page, limit, skip, sortBy, sortOrder } =
+    paginationHelpers.calculatePagination(options);
+  const { searchTerm, ...filterData } = filters;
+
+  const andConditions = [];
+  if (searchTerm) {
+    andConditions.push({
+      $or: academicDepartmentSearchableFields.map(field => ({
+        [field]: {
+          $regex: searchTerm,
+          $options: 'i',
+        },
+      })),
+    });
+  }
+
+  if (Object.keys(filterData).length > 0) {
+    andConditions.push({
+      $and: Object.entries(filterData).map(([field, value]) => ({
+        [field]: value,
+      })),
+    });
+  }
+  const whereConditions =
+    andConditions.length > 0 ? { $and: andConditions } : {};
+  const sortConditions: { [key: string]: SortOrder } = {};
+  if (sortBy && sortOrder) {
+    sortConditions[sortBy] = sortOrder;
+  }
+  const result = await AcademicDepartment.find(whereConditions)
+    .populate('academicFaculty')
+    .sort(sortConditions)
+    .limit(limit)
+    .skip(skip);
   const total = await AcademicDepartment.countDocuments();
   return {
     meta: {
-      page: 1,
-      limit: 10,
+      page,
+      limit,
       total,
     },
     data: result,

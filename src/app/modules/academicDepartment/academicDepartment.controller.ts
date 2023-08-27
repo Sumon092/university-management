@@ -4,6 +4,8 @@ import { AcademicDepartmentService } from './academicDepartment.services';
 import { sendResponse } from '../../../shared/sendResponse';
 import { IAcademicDepartment } from './academicDepartment.interface';
 import httpStatus from 'http-status';
+import pick from '../../../shared/pick';
+import { academicDepartmentFilterableFields } from './academicDepartment.constants';
 
 const createDepartment = catchAsync(async (req: Request, res: Response) => {
   const result = await AcademicDepartmentService.createDepartment(req.body);
@@ -16,7 +18,12 @@ const createDepartment = catchAsync(async (req: Request, res: Response) => {
   });
 });
 const getDepartments = catchAsync(async (req: Request, res: Response) => {
-  const result = await AcademicDepartmentService.getDepartments();
+  const filters = pick(req.query, academicDepartmentFilterableFields);
+  const options = pick(req.query, ['page', 'limit', 'sortBy', 'sortOrder']);
+  const result = await AcademicDepartmentService.getDepartments(
+    filters,
+    options
+  );
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

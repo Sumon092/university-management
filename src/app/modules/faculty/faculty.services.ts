@@ -1,10 +1,13 @@
-import { SortOrder } from 'mongoose';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import mongoose, { SortOrder } from 'mongoose';
 import { paginationHelpers } from '../../../helper/paginationHelper';
 import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
 import { IFaculty, IFacultyFilters } from './faculty.interface';
 import { facultySearchableFields } from './faculty.constants';
 import { Faculty } from './faculty.model';
+import ApiError from '../../../errors/ApiErrors';
+import { User } from '../users/user.model';
 
 const getAllFaculty = async (
   filters: IFacultyFilters,
@@ -67,7 +70,21 @@ const updateFaculty = async (
   id: string,
   payLoad: Partial<IFaculty>
 ): Promise<IFaculty | null> => {
-  const result = await Faculty.findOneAndUpdate({ _id: id }, payLoad, {
+  const isExist = await Faculty.findOne({ id });
+
+  if (!isExist) {
+    throw new ApiError(404, 'Faculty not found');
+  }
+  const { name, ...facultyData } = payLoad;
+  const updatedFacultyData = facultyData;
+
+  if (name && Object.keys(name).length > 0) {
+    Object.keys(name).forEach(key => {
+      const nameKey = `name.${key}` as keyof Partial<IFaculty>;
+      (updatedFacultyData as any)[nameKey] = name[key as keyof typeof name];
+    });
+  }
+  const result = await Faculty.findOneAndUpdate({ id }, updatedFacultyData, {
     new: true,
   })
     .populate('academicDepartment')
@@ -76,8 +93,32 @@ const updateFaculty = async (
 };
 
 const deleteFaculty = async (id: string): Promise<IFaculty | null> => {
-  const result = await Faculty.findOneAndDelete({ _id: id });
-  return result;
+  const exist = await Faculty.findOne({ id });
+  if (!exist) {
+    throw new ApiError(404, 'Faculty not found');
+  }
+  const session = await mongoose.startSession();
+  try {
+    session.startTransaction();
+    const deletedFaculty = await Faculty.findOneAndDelete({ id }, { session });
+    if (!deletedFaculty) {
+      throw new ApiError(404, 'Faculty not found');
+    }
+
+    const deletedUser = await User.findOneAndDelete({ id }, { session });
+    if (!deletedUser) {
+      throw new ApiError(404, 'User not found');
+    }
+
+    await session.commitTransaction();
+    await session.endSession();
+
+    return deletedFaculty;
+  } catch (error) {
+    await session.abortTransaction();
+    await session.endSession();
+    throw error;
+  }
 };
 
 export const FacultyServices = {

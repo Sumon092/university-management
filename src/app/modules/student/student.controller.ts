@@ -4,7 +4,7 @@ import { StudentServices } from './student.services';
 import pick from '../../../shared/pick';
 import { sendResponse } from '../../../shared/sendResponse';
 import httpStatus from 'http-status';
-import { studentFilterableFields } from './students.constants';
+import { studentFilterableFields } from './student.constants';
 
 const getAllStudent = catchAsync(async (req: Request, res: Response) => {
   const filters = pick(req.query, studentFilterableFields);

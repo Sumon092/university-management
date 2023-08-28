@@ -1,7 +1,11 @@
 import httpStatus from 'http-status';
 import ApiError from '../../../errors/ApiErrors';
 import { User } from '../users/user.model';
-import { ILoginResponse, ILoginUser } from './auth.interface';
+import {
+  ILoginResponse,
+  ILoginUser,
+  IRefreshTokenResponse,
+} from './auth.interface';
 import { Secret } from 'jsonwebtoken';
 import config from '../../../config';
 import { jwtHelper } from '../../../helper/jwtHelper';
@@ -54,6 +58,41 @@ const loginUser = async (payLoad: ILoginUser): Promise<ILoginResponse> => {
   };
 };
 
+const refreshToken = async (token: string): Promise<IRefreshTokenResponse> => {
+  const user = new User();
+  // verify token
+  let verifiedToken = null;
+  try {
+    verifiedToken = jwtHelper.verifyToken(
+      token,
+      config.jwt.refresh_secret as Secret
+    );
+  } catch (error) {
+    throw new ApiError(httpStatus.FORBIDDEN, 'Invalid refresh token');
+  }
+
+  // checking deleted user
+  const { userId } = verifiedToken;
+  const isUserExist = await user.isUserExist(userId);
+  if (!isUserExist) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'user does not exist');
+  }
+  // generate new token
+  const newAccessToken = jwtHelper.createToken(
+    {
+      id: isUserExist.id,
+      role: isUserExist.role,
+    },
+    config.jwt.secret as Secret,
+    config.jwt.jwt_expires as string
+  );
+
+  return {
+    accessToken: newAccessToken,
+  };
+};
+
 export const AuthServices = {
   loginUser,
+  refreshToken,
 };

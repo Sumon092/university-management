@@ -36,7 +36,7 @@ const createAdmin: RequestHandler = catchAsync(
     sendResponse<IUser>(res, {
       statusCode: httpStatus.OK,
       success: true,
-      message: 'Faculty created successfully!',
+      message: 'Admin created successfully!',
       data: result,
     });
   }

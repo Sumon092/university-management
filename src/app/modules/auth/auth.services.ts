@@ -9,16 +9,21 @@ import { jwtHelper } from '../../../helper/jwtHelper';
 const loginUser = async (payLoad: ILoginUser): Promise<ILoginResponse> => {
   const { id, password } = payLoad;
   const user = new User();
+
   const isUserExist = await user.isUserExist(id);
   if (!isUserExist) {
     throw new ApiError(404, 'User does not exist');
   }
-  if (
-    isUserExist.password &&
-    !user.isPasswordMatched(password, isUserExist.password)
-  ) {
-    throw new ApiError(httpStatus.UNAUTHORIZED, 'Wrong credentials');
+  if (isUserExist && isUserExist.password) {
+    const passwordsMatch = await user.isPasswordMatched(
+      password,
+      isUserExist.password
+    );
+    if (!passwordsMatch) {
+      throw new ApiError(httpStatus.UNAUTHORIZED, 'Password does not match');
+    }
   }
+
   const { id: userId, role, needChangePassword } = isUserExist;
   const accessToken = jwtHelper.createToken(
     { userId, role },

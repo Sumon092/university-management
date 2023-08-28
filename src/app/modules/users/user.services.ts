@@ -144,12 +144,13 @@ const createAdmin = async (
   if (!user.password) {
     user.password = config.default_student_pass as string;
   }
-  user.role = 'faculty';
+  user.role = 'admin';
   const session = await mongoose.startSession();
   let newAdminData = null;
   try {
     session.startTransaction();
     const id = await generateAdminId();
+    console.log(id, 'admin id');
     user.id = id;
     admin.id = id;
 
@@ -173,6 +174,7 @@ const createAdmin = async (
 
   return newAdminData;
 };
+
 export const UserService = {
   createStudent,
   createFaculty,

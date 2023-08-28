@@ -7,8 +7,8 @@ import { sendResponse } from '../../../shared/sendResponse';
 import httpStatus from 'http-status';
 
 const getAllAdmin = catchAsync(async (req: Request, res: Response) => {
-  const filters = pick(req.body, adminFilterableFields);
-  const options = pick(req.body, ['page', 'limit', 'sortBy', 'sortOrder']);
+  const filters = pick(req.query, adminFilterableFields);
+  const options = pick(req.query, ['page', 'limit', 'sortBy', 'sortOrder']);
 
   const results = await AdminServices.getAllAdmin(filters, options);
   sendResponse(res, {

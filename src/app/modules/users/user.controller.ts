@@ -31,8 +31,8 @@ const createFaculty: RequestHandler = catchAsync(
 );
 const createAdmin: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
-    const { faculty, ...userData } = req.body;
-    const result = await UserService.createAdmin(faculty, userData);
+    const { admin, ...userData } = req.body;
+    const result = await UserService.createAdmin(admin, userData);
     sendResponse<IUser>(res, {
       statusCode: httpStatus.OK,
       success: true,

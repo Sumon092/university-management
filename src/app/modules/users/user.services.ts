@@ -7,12 +7,18 @@ import { IStudent } from '../student/student.interface';
 import { Student } from '../student/student.model';
 import { IUser } from './user.interface';
 import { User } from './user.model';
-import { generateFacultyId, generateStudentId } from './user.utils';
+import {
+  generateAdminId,
+  generateFacultyId,
+  generateStudentId,
+} from './user.utils';
 import { AcademicSemester } from '../academicSemester/academicSemester.model';
 import { IAcademicSemester } from '../academicSemester/academicSemester.interface';
 import ApiError from '../../../errors/ApiErrors';
 import { IFaculty } from '../faculty/faculty.interface';
 import { Faculty } from '../faculty/faculty.model';
+import { IAdmin } from '../admin/admin.interface';
+import { Admin } from '../admin/admin.model';
 
 const createStudent = async (
   student: IStudent,
@@ -22,6 +28,7 @@ const createStudent = async (
   if (!user.password) {
     user.password = config.default_student_pass as string;
   }
+
   // set role
   user.role = 'student';
 
@@ -131,8 +138,46 @@ const createFaculty = async (
   }
   return newFacultyData;
 };
+const createAdmin = async (
+  admin: IAdmin,
+  user: IUser
+): Promise<IUser | null> => {
+  if (!user.password) {
+    user.password = config.default_student_pass as string;
+  }
+  user.role = 'admin';
+  const session = await mongoose.startSession();
+  let newAdminData = null;
+  try {
+    session.startTransaction();
+    const id = await generateAdminId();
+    console.log(id, 'admin id');
+    user.id = id;
+    admin.id = id;
+
+    const newAdmin = await Admin.create([admin], { session });
+    if (!newAdmin) {
+      throw new ApiError(httpStatus.BAD_REQUEST, 'Failed to create admin');
+    }
+    user.admin = newAdmin[0]._id;
+    const newUser = await User.create([user], { session });
+    if (!newUser) {
+      throw new ApiError(httpStatus.BAD_REQUEST, 'failed to create user');
+    }
+    newAdminData = newUser[0];
+    await session.commitTransaction();
+    await session.endSession();
+  } catch (error) {
+    await session.abortTransaction();
+    await session.endSession();
+    throw error;
+  }
+
+  return newAdminData;
+};
 
 export const UserService = {
   createStudent,
   createFaculty,
+  createAdmin,
 };

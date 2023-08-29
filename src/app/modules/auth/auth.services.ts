@@ -10,7 +10,6 @@ import {
 import { JwtPayload, Secret } from 'jsonwebtoken';
 import config from '../../../config';
 import { jwtHelper } from '../../../helper/jwtHelper';
-import bcrypt from 'bcrypt';
 
 const loginUser = async (payLoad: ILoginUser): Promise<ILoginResponse> => {
   const { id, password } = payLoad;
@@ -101,31 +100,49 @@ const changePassword = async (
 ): Promise<void> => {
   const userData = new User();
   const { oldPassword, newPassword } = payload;
-  const isUserExist = await userData.isUserExist(user?.userId);
-  if (!isUserExist) {
-    throw new ApiError(404, 'User does not exist');
-  }
-  if (isUserExist && isUserExist.password) {
-    const passwordsMatch = await userData.isPasswordMatched(
-      oldPassword,
-      isUserExist.password
-    );
-    if (!passwordsMatch) {
-      throw new ApiError(httpStatus.UNAUTHORIZED, 'Password does not match');
-    }
-  }
-  const newHashedPassword = await bcrypt.hash(
-    newPassword,
-    Number(config.bcrypt_salt_rounds)
-  );
+  const isUserExist: null | typeof userData = await User.findOne({
+    id: user?.userId,
+  }).select('+password');
 
-  const updatedData = {
-    password: newHashedPassword,
-    needChangePassword: false,
-    passwordChangeAt: new Date(),
-  };
+  if (!isUserExist) {
+    throw new ApiError(httpStatus.NOT_FOUND, 'User does not exist');
+  }
+  if (
+    isUserExist?.password &&
+    !(await userData.isPasswordMatched(oldPassword, isUserExist.password))
+  ) {
+    throw new ApiError(httpStatus.UNAUTHORIZED, 'Old Password is incorrect');
+  }
+  isUserExist.password = newPassword;
+  isUserExist.save();
+  //todo old way start
+  // const userData = new User();
+  // const isUserExist = await userData.isUserExist(user?.userId);
+  // if (!isUserExist) {
+  //   throw new ApiError(404, 'User does not exist');
+  // }
+  // if (isUserExist && isUserExist.password) {
+  //   const passwordsMatch = await userData.isPasswordMatched(
+  //     oldPassword,
+  //     isUserExist.password
+  //   );
+  //   if (!passwordsMatch) {
+  //     throw new ApiError(httpStatus.UNAUTHORIZED, 'Password does not match');
+  //   }
+  // }
+  // const newHashedPassword = await bcrypt.hash(
+  //   newPassword,
+  //   Number(config.bcrypt_salt_rounds)
+  // );
+
+  // const updatedData = {
+  //   password: newHashedPassword,
+  //   needChangePassword: false,
+  //   passwordChangeAt: new Date(),
+  // };
   //update password
-  await User.findOneAndUpdate({ id: user?.userId }, updatedData);
+  // await User.findOneAndUpdate({ id: user?.userId }, updatedData);
+  //todo old way finish
 };
 
 export const AuthServices = {

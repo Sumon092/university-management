@@ -14,18 +14,17 @@ const auth =
       if (!token) {
         throw new ApiError(httpStatus.UNAUTHORIZED, 'You are not authorized');
       }
-      // verify token
 
+      // verify token
       const verifiedUser = jwtHelper.verifyToken(
         token,
         config.jwt.secret as Secret
       );
-
       if (!verifiedUser) {
         throw new ApiError(httpStatus.FORBIDDEN, 'Invalid token');
       }
       //   Check if the user's role matches any of the required roles
-      if (!requiredRoles.includes(verifiedUser.role)) {
+      if (requiredRoles.length && !requiredRoles.includes(verifiedUser.role)) {
         throw new ApiError(httpStatus.FORBIDDEN, 'Insufficient permissions');
       }
 

@@ -29,11 +29,13 @@ const loginUser = async (payLoad: ILoginUser): Promise<ILoginResponse> => {
   }
 
   const { id: userId, role, needChangePassword } = isUserExist;
+
   const accessToken = jwtHelper.createToken(
     { userId, role },
     config.jwt.secret as Secret,
     config.jwt.jwt_expires as string
   );
+
   const refreshToken = jwtHelper.createToken(
     { userId, role },
     config.jwt.refresh_secret as Secret,
@@ -86,7 +88,6 @@ const refreshToken = async (token: string): Promise<IRefreshTokenResponse> => {
     config.jwt.secret as Secret,
     config.jwt.jwt_expires as string
   );
-
   return {
     accessToken: newAccessToken,
   };

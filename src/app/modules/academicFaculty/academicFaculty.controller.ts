@@ -6,8 +6,9 @@ import { IAcademicFaculty } from './academicFaculty.interface';
 import httpStatus from 'http-status';
 import pick from '../../../shared/pick';
 import { academicFacultyFilterableFields } from './academicFaculty.constants';
+import { RequestHandler } from 'express-serve-static-core';
 
-const createAcademicFaculty = catchAsync(
+const createAcademicFaculty: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const result = await AcademicFacultyServices.createAcademicFaculty(
       req.body
@@ -21,34 +22,38 @@ const createAcademicFaculty = catchAsync(
   }
 );
 
-const getAcademicFaculties = catchAsync(async (req: Request, res: Response) => {
-  const filters = pick(req.query, academicFacultyFilterableFields);
-  const options = pick(req.query, ['page', 'limit', 'sortBy', 'sortOrder']);
-  const result = await AcademicFacultyServices.getAcademicFaculties(
-    filters,
-    options
-  );
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: 'Academic faculties fetched successful',
-    meta: result.meta,
-    data: result.data,
-  });
-});
+const getAcademicFaculties: RequestHandler = catchAsync(
+  async (req: Request, res: Response) => {
+    const filters = pick(req.query, academicFacultyFilterableFields);
+    const options = pick(req.query, ['page', 'limit', 'sortBy', 'sortOrder']);
+    const result = await AcademicFacultyServices.getAcademicFaculties(
+      filters,
+      options
+    );
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Academic faculties fetched successful',
+      meta: result.meta,
+      data: result.data,
+    });
+  }
+);
 
-const getAcademicFaculty = catchAsync(async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const result = await AcademicFacultyServices.getAcademicFaculty(id);
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: 'Academic faculty fetched successful',
-    data: result,
-  });
-});
+const getAcademicFaculty: RequestHandler = catchAsync(
+  async (req: Request, res: Response) => {
+    const { id } = req.params;
+    const result = await AcademicFacultyServices.getAcademicFaculty(id);
+    sendResponse(res, {
+      statusCode: httpStatus.OK,
+      success: true,
+      message: 'Academic faculty fetched successful',
+      data: result,
+    });
+  }
+);
 
-const updateAcademicFaculty = catchAsync(
+const updateAcademicFaculty: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const { id } = req.params;
     const payLoad = req.body;
@@ -65,7 +70,7 @@ const updateAcademicFaculty = catchAsync(
   }
 );
 
-const deleteAcademicFaculty = catchAsync(
+const deleteAcademicFaculty: RequestHandler = catchAsync(
   async (req: Request, res: Response) => {
     const { id } = req.params;
 

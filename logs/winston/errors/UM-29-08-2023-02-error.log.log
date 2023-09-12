@@ -1,6 +1,0 @@
-Tue Aug 29 2023 02:09:27 GMT+0600 (Bangladesh Standard Time) 2:9:27 [PH] error: Failed to connect Database querySrv ECONNREFUSED _mongodb._tcp.cluster0.agj7x01.mongodb.net  
-Tue Aug 29 2023 02:11:09 GMT+0600 (Bangladesh Standard Time) 2:11:9 [PH] error: Failed to connect Database querySrv ECONNREFUSED _mongodb._tcp.cluster0.agj7x01.mongodb.net  
-Tue Aug 29 2023 02:21:39 GMT+0600 (Bangladesh Standard Time) 2:21:39 [PH] error: Failed to connect Database querySrv ETIMEOUT _mongodb._tcp.cluster0.agj7x01.mongodb.net  
-Tue Aug 29 2023 02:22:56 GMT+0600 (Bangladesh Standard Time) 2:22:56 [PH] error: Failed to connect Database querySrv ECONNREFUSED _mongodb._tcp.cluster0.agj7x01.mongodb.net  
-Tue Aug 29 2023 02:23:10 GMT+0600 (Bangladesh Standard Time) 2:23:10 [PH] error: Failed to connect Database querySrv ECONNREFUSED _mongodb._tcp.cluster0.agj7x01.mongodb.net  
-Tue Aug 29 2023 02:23:34 GMT+0600 (Bangladesh Standard Time) 2:23:34 [PH] error: Failed to connect Database querySrv ECONNREFUSED _mongodb._tcp.cluster0.agj7x01.mongodb.net  

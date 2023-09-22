@@ -10,6 +10,7 @@ const redisClient = createClient({
 const redisPubClient = createClient({
   url: config.redis.url,
 });
+
 const redisSubClient = createClient({
   url: config.redis.url,
 });
@@ -47,10 +48,12 @@ const setAccessToken = async (userId: string, token: string): Promise<void> => {
   const key = `access-token:${userId}`;
   await redisClient.set(key, token, { EX: Number(config.redis.expires_in) });
 };
+
 const getAccessToken = async (userId: string): Promise<string | null> => {
   const key = `access-token:${userId}`;
   return await redisClient.get(key);
 };
+
 const delAccessToken = async (userId: string): Promise<void> => {
   const key = `access-token:${userId}`;
   await redisClient.del(key);

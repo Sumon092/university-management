@@ -7,3 +7,4 @@ Fri Sep 22 2023 12:04:07 GMT+0600 (Bangladesh Standard Time) 12:4:7 [PH] error: 
 Fri Sep 22 2023 12:04:18 GMT+0600 (Bangladesh Standard Time) 12:4:18 [PH] error: Failed to connect Database querySrv ECONNREFUSED _mongodb._tcp.cluster0.agj7x01.mongodb.net  
 Fri Sep 22 2023 12:04:23 GMT+0600 (Bangladesh Standard Time) 12:4:23 [PH] error: Failed to connect Database querySrv ECONNREFUSED _mongodb._tcp.cluster0.agj7x01.mongodb.net  
 Fri Sep 22 2023 12:24:16 GMT+0600 (Bangladesh Standard Time) 12:24:16 [PH] error: Failed to connect Database EVENT_ACADEMIC_SEMESTER_UP is not defined  
+Fri Sep 22 2023 12:54:42 GMT+0600 (Bangladesh Standard Time) 12:54:42 [PH] error: Failed to connect Database querySrv ECONNREFUSED _mongodb._tcp.cluster0.agj7x01.mongodb.net  

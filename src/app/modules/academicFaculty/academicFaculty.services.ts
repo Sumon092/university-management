@@ -3,6 +3,8 @@ import { paginationHelpers } from '../../../helper/paginationHelper';
 import { IGenericResponse } from '../../../interfaces/common';
 import { IPaginationOptions } from '../../../interfaces/pagination';
 import {
+  AcademicFacultyCreatedEvent,
+  AcademicFacultyUpdatedEvent,
   IAcademicFacultiesFilters,
   IAcademicFaculty,
 } from './academicFaculty.interface';
@@ -88,10 +90,39 @@ const deleteAcademicFaculty = async (
   return result;
 };
 
+const insertIntoDBFromEvent = async (
+  e: AcademicFacultyCreatedEvent
+): Promise<void> => {
+  await AcademicFaculty.create({
+    syncId: e.id,
+    title: e.title,
+  });
+};
+
+const updateOneInDBFromEvent = async (
+  e: AcademicFacultyUpdatedEvent
+): Promise<void> => {
+  await AcademicFaculty.findOneAndUpdate(
+    { syncId: e.id },
+    {
+      $set: {
+        title: e.title,
+      },
+    }
+  );
+};
+
+const deleteOneFromDBFromEvent = async (syncId: string): Promise<void> => {
+  await AcademicFaculty.findOneAndDelete({ syncId });
+};
+
 export const AcademicFacultyServices = {
   createAcademicFaculty,
   getAcademicFaculties,
   getAcademicFaculty,
   updateAcademicFaculty,
   deleteAcademicFaculty,
+  insertIntoDBFromEvent,
+  updateOneInDBFromEvent,
+  deleteOneFromDBFromEvent,
 };
